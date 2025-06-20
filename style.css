@@ -12,8 +12,9 @@ body {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   background: var(--background-color);
   display: flex;
-  justify-content: center;
-  align-items: start;
+  justify-content: flex-start;
+  flex-direction: column;
+  align-items: center;
   padding-top: 50px;
   height: 100vh;
   margin: 0;
@@ -126,9 +127,10 @@ input[type="checkbox"]:checked::after {
   display: flex;
   margin-top: 15px;
   gap: 10px;
+  flex-wrap: wrap;
 }
 
-#todo-input {
+#todo-input,#todo-desc {
   flex: 1;
   padding: 12px 15px;
   border: 2px solid var(--border-color);
@@ -179,12 +181,19 @@ input[type="checkbox"]:checked::after {
   color: var(--text-color);
   font-weight: 500;
 }
+.quotes{
+  margin-top: 20px;
+  font-style: italic;
+  color: #7f8c8d;
+  text-align: center;
+  font-size: 16px;
+  max-width: 400px;
+}
 
-/* Dark mode styles */
-body.dark {
-  --background-color: #1a1a1a;
-  --card-background: rgba(255, 255, 255, 0.05);
-  --text-color: #ffffff;
-  --border-color: rgba(255, 255, 255, 0.1);
-  --shadow-color: rgba(0, 0, 0, 0.3);
+.modal{
+  display: none;
+  position: fixed;
+  bottom:0;
+  right:15px;
+  border:3px solid #f1f1f1
 }
