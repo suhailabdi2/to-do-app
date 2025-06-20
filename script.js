@@ -15,11 +15,10 @@ const displayBtn= document.querySelector(".display-btn");
 themeToggle.addEventListener("click", function () {
   document.body.classList.toggle("dark-theme");
   if (document.body.classList.contains("dark-theme")) {
-    themeToggle.textContent = "Light Mode";
-    document.body.classList.remove("dark-mode");
-
-  } else {
     themeToggle.textContent = "Dark Mode";
+    document.body.classList.remove("dark-mode");
+  } else {
+    themeToggle.textContent = "Light Mode";
     document.body.classList.add("dark-mode");
   }
 })
@@ -69,6 +68,7 @@ function addTodo() {
   deleteBtn.style.cursor = "pointer";
   deleteBtn.addEventListener("click", () => {
     li.remove();
+    console.log("Task deleted:", taskText);
     localStorage.removeItem(taskText);
     tasks = tasks.filter(task => task.task !== taskText);
     updateStatistics();
@@ -150,3 +150,11 @@ function renderTasks() {
 }
 
 renderTasks();
+function deleteTask(task){
+  
+  tasks = tasks.filter(t => t !== task);
+  saveTasks();
+  renderTasks();
+}
+
+
