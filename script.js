@@ -9,6 +9,21 @@ const modalClose = document.querySelector("#close-modal");
 const p = document.querySelector("#task-description");
 const desc = document.querySelector("#todo-desc");
 const modalTitle= document.querySelector(".modal-title");
+const tasklist=document.querySelector("#task-list");
+const displayBtn= document.querySelector(".display-btn");
+
+themeToggle.addEventListener("click", function () {
+  document.body.classList.toggle("dark-theme");
+  if (document.body.classList.contains("dark-theme")) {
+    themeToggle.textContent = "Light Mode";
+    document.body.classList.remove("dark-mode");
+
+  } else {
+    themeToggle.textContent = "Dark Mode";
+    document.body.classList.add("dark-mode");
+  }
+})
+
 fetch('https://yurippe.vercel.app/api/quotes?character=&random=1')
 .then(res => res.json())
 .then(data => {
@@ -54,6 +69,8 @@ function addTodo() {
   deleteBtn.style.cursor = "pointer";
   deleteBtn.addEventListener("click", () => {
     li.remove();
+    localStorage.removeItem(taskText);
+    tasks = tasks.filter(task => task.task !== taskText);
     updateStatistics();
   });
   li.appendChild(checkbox);
@@ -61,22 +78,75 @@ function addTodo() {
   li.appendChild(deleteBtn);
   todoList.appendChild(li);
   todoInput.value = "";
+  desc.value = "";
   updateStatistics();
   const date = new Date();
   const time = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   const timeSpan = document.createElement("span");
   document.querySelector(".modal-content").appendChild(timeSpan);
   timeSpan.textContent = time;
+  li.style.color = "black";
   li.appendChild(timeSpan);
-  li.addEventListener("click", function () {
-    modalTitle.textContent=taskText;
-    modalbtn.style.display = "block";
-    p.innerHTML = desc.value.trim();
-    
-  })
+  tasks.push({
+    task:taskText,
+    time: time,
+    description:desc.value,
+    value: checkbox.checked
+  });
+  saveTasks();
+  console.log(tasks);
 }
 modalClose.addEventListener("click", function () {
   modalbtn.style.display = "none";
   desc.value = "";
 });
+displayBtn.addEventListener("click", function () {
+  tasklist.innerHTML = "";
+  tasks.map((task) => {
+    const li = document.createElement("li");
+    li.textContent = task.task;
+    tasklist.appendChild(li);
+    console.log(task);
+  });
+});
 
+function saveTasks() {
+  localStorage.setItem('tasks', JSON.stringify(tasks));
+}
+
+function loadTasks() {
+  const stored = localStorage.getItem('tasks');
+  if (stored) {
+    return JSON.parse(stored).map(task => ({
+      ...task,
+      date: new Date(task.date)
+    }));
+  }
+  return [];
+}
+
+let tasks = loadTasks();
+
+function addTask(task) {
+  tasks.push(task);
+  saveTasks();
+  renderTasks();
+}
+
+
+addTask({ title: "New Task", description: "Details", date: new Date() });
+function renderTasks() {
+  taskList.innerHTML = '';
+  tasks.forEach((task, index) => {
+    const li = document.createElement("li");
+    li.textContent = task.title;
+    li.addEventListener("click", () => {
+      taskDetails.innerHTML = `
+        <strong>Description:</strong> ${task.description}<br>
+        <strong>Date Created:</strong> ${task.date.toLocaleString()}`;
+    });
+    taskList.appendChild(li);
+  });
+}
+
+renderTasks();
